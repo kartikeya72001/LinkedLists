@@ -1,44 +1,25 @@
-#include<iostream>
+#include <bits/stdc++.h>
 using namespace std;
-class node
+
+class Node
 {
 public:
     int data;
-    node *next;
-    node(int d)
+    Node *next;
+    Node(int d)
     {
         data = d;
-        next=NULL;
+        next = NULL;
     }
 };
-void InsertAtTail(node *&head, int data)
+
+// head - Head pointer of the Linked List
+// Return a boolean value indicating the presence of cycle
+// If the cycle is present, modify the linked list to remove the cycle as well
+void CycleRemove(Node *&head)
 {
-    if(head==NULL)
-    {
-        head = new node(data);
-        return;
-    }
-    node* tail = head;
-    while(tail->next!=NULL)
-    {
-        tail=tail->next;
-    }
-    tail->next=new node(data);
-    return;
-}
-void Print(node *head)
-{
-    while(head!=NULL)
-    {
-        cout<<head->data<<" ";
-        head=head->next;
-    }
-    cout<<endl;
-}
-void FloydCycle(node* head)
-{
-	node *slow = head;
-	node *fast = head;
+    Node *slow = head;
+	Node *fast = head;
 	fast = fast->next->next;
     slow = slow->next;
 	while(fast->data!=slow->data)
@@ -55,18 +36,88 @@ void FloydCycle(node* head)
 	fast->next = NULL;
 	return;
 }
+bool floydCycleRemoval(Node *h)
+{
+    Node* head = h;
+    unordered_set<Node*> s;
+    while (h != NULL) {
+        if (s.find(h) != s.end())
+        {
+            CycleRemove(head);
+            return true;
+        }
+        s.insert(h);
+        h = h->next;
+    }
+
+    return false;
+}
+
+void buildCycleList(Node *&head)
+{
+    unordered_map<int, Node *> hash;
+    int x;
+    cin >> x;
+    if (x == -1)
+    {
+        head = NULL;
+        return;
+    }
+    head = new Node(x);
+    hash[x] = head;
+    Node *current = head;
+    while (x != -1)
+    {
+        cin >> x;
+        if (x == -1)
+            break;
+        if (hash.find(x) != hash.end())
+        {
+            current->next = hash[x];
+            return;
+        }
+        Node *n = new Node(x);
+        current->next = n;
+        current = n;
+        hash[x] = n;
+    }
+    current->next = NULL;
+}
+
+void printLinkedList(Node *head)
+{
+    unordered_set<int> s;
+    while (head != NULL)
+    {
+        if (s.find(head->data) != s.end())
+        {
+            cout << "\nCycle detected at " << head->data;
+            return;
+        }
+        cout << head->data << " ";
+        s.insert(head->data);
+        head = head->next;
+    }
+}
+
 int main()
 {
-    node *head = NULL;
-    int data = 0;
-	cin>>data;
-	while(data!=-1)
-	{
-		InsertAtTail(head,data);
-		cin>>data;
-	}
-	//Print(head);
-	FloydCycle(head);
-	Print(head);
+    Node *head = NULL;
+
+    buildCycleList(head);
+
+    bool cyclePresent = floydCycleRemoval(head);
+    if (cyclePresent)
+    {
+        cout << "Cycle was present\n";
+    }
+    else
+    {
+        cout << "No cycle\n";
+    }
+
+    cout << "Linked List - ";
+    printLinkedList(head);
+
     return 0;
 }
