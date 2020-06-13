@@ -38,6 +38,21 @@ void CycleRemove(Node *&head)
 }
 bool floydCycleRemoval(Node *h)
 {
+    Node *slow_p = h, *fast_p = h;
+
+        while (slow_p && fast_p && fast_p->next) {
+            slow_p = slow_p->next;
+            fast_p = fast_p->next->next;
+            if (slow_p == fast_p) {
+                CycleRemove(head);
+                return true;
+            }
+        }
+        return false;
+}
+
+bool CycleDetect(Node* head)
+{
     Node* head = h;
     unordered_set<Node*> s;
     while (h != NULL) {
