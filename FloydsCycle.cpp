@@ -44,14 +44,14 @@ bool floydCycleRemoval(Node *h)
             slow_p = slow_p->next;
             fast_p = fast_p->next->next;
             if (slow_p == fast_p) {
-                CycleRemove(head);
+                CycleRemove(h);
                 return true;
             }
         }
         return false;
 }
 
-bool CycleDetect(Node* head)
+bool CycleDetect(Node* h)
 {
     Node* head = h;
     unordered_set<Node*> s;
